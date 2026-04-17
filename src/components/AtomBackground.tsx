@@ -62,15 +62,19 @@ export function AtomBackground() {
               <div className="absolute inset-0 rounded-full border border-white/10" />
 
               {orbit.particles.map((particle) => (
-                <span
+                <div
                   key={particle.id}
-                  className={`absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full ${particle.className}`}
-                  style={{
-                    width: particle.size,
-                    height: particle.size,
-                    transform: `translate(-50%, -50%) rotate(${particle.angle}deg) translateY(-${orbit.size / 2}px)`,
-                  }}
-                />
+                  className="absolute inset-0"
+                  style={{ transform: `rotate(${particle.angle}deg)` }}
+                >
+                  <span
+                    className={`absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full ${particle.className}`}
+                    style={{
+                      width: particle.size,
+                      height: particle.size,
+                    }}
+                  />
+                </div>
               ))}
             </motion.div>
           </div>

@@ -21,8 +21,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition:
-    color 700ms ease,
-    background-color 700ms ease;
+    color 500ms ease,
+    background-color 500ms ease;
 }
 
 .dark body {
@@ -60,22 +60,24 @@ body {
   background: rgba(255, 255, 255, 0.74);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 16px 45px rgba(15, 23, 42, 0.09);
+  box-shadow:
+    0 12px 22px rgba(191, 219, 254, 0.5),
+    0 10px 34px rgba(15, 23, 42, 0.08);
   transition:
-    border-color 350ms ease,
-    background-color 350ms ease,
-    box-shadow 350ms ease,
-    transform 350ms ease;
+    border-color 500ms ease,
+    background-color 500ms ease,
+    box-shadow 500ms ease,
+    transform 500ms ease;
 }
 
 .dark .ui-card {
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow:
-    0 18px 50px rgba(2, 6, 23, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 16px 46px rgba(2, 6, 23, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .ui-input {
@@ -87,16 +89,16 @@ body {
     inset 0 1px 2px rgba(15, 23, 42, 0.06),
     0 6px 18px rgba(15, 23, 42, 0.05);
   transition:
-    border-color 220ms ease,
-    box-shadow 220ms ease,
-    background-color 220ms ease;
+    border-color 500ms ease,
+    box-shadow 500ms ease,
+    background-color 500ms ease;
 }
 
 .ui-input:focus {
   outline: none;
   border-color: rgba(14, 165, 233, 0.7);
   box-shadow:
-    0 0 0 4px rgba(56, 189, 248, 0.16),
+    0 0 0 2px rgba(96, 165, 250, 0.9),
     0 14px 32px rgba(14, 116, 144, 0.16);
 }
 
@@ -112,7 +114,7 @@ body {
 .dark .ui-input:focus {
   border-color: rgba(103, 232, 249, 0.7);
   box-shadow:
-    0 0 0 4px rgba(34, 211, 238, 0.16),
+    0 0 0 2px rgba(96, 165, 250, 0.9),
     0 0 28px rgba(56, 189, 248, 0.18);
 }
 
@@ -122,12 +124,12 @@ body {
   font-weight: 700;
   letter-spacing: 0.01em;
   color: #ffffff;
-  background-image: linear-gradient(135deg, #0ea5e9 0%, #2563eb 56%, #7c3aed 100%);
+  background-image: linear-gradient(90deg, #3b82f6 0%, #a855f7 100%);
   box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
   transition:
-    transform 220ms ease,
-    box-shadow 220ms ease,
-    filter 220ms ease;
+    transform 500ms ease,
+    box-shadow 500ms ease,
+    filter 500ms ease;
 }
 
 .ui-button:hover:not(:disabled) {
