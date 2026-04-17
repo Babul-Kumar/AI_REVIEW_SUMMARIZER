@@ -7,7 +7,7 @@
 ## 🌐 Live Demo
 
 👉 *Add your deployed link here (Vercel/Netlify)*
-Example: https://your-app.vercel.app
+Example: https://ai-review-summarizer-git-main-bk7321634-3614s-projects.vercel.app/
 
 ---
 
