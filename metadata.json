@@ -1,0 +1,6 @@
+{
+  "name": "AI Product Review Analyzer",
+  "description": "Analyze product reviews for sentiment, pros, cons, and structured insights with out-of-scope detection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
