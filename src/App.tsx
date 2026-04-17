@@ -60,7 +60,7 @@ const EXAMPLES = [
 ];
 
 export default function App() {
-  const [inputText, setInputText] = useState("");
+  const [reviewText, setReviewText] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +69,7 @@ export default function App() {
     [],
   );
 
-  const handleAnalyze = async (text: string = inputText) => {
+  const handleAnalyze = async (text: string = reviewText) => {
     if (!text.trim()) {
       return;
     }
@@ -80,14 +80,25 @@ export default function App() {
     try {
       const data = await analyzeReview(text);
       setResult(data);
-      if (text !== inputText) {
-        setInputText(text);
+      if (text !== reviewText) {
+        setReviewText(text);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleReset = () => {
+    setReviewText("");
+    setResult(null);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    setTimeout(() => {
+      document.getElementById("review-input")?.focus();
+    }, 300);
   };
 
   const sentimentData = [
@@ -103,14 +114,14 @@ export default function App() {
       value: result?.sentiment?.neutral ?? 0,
       barClass: "bg-slate-400",
       trackClass: "bg-slate-400/25",
-      textClass: "text-slate-600 dark:text-slate-300",
+      textClass: "text-slate-600 dark:text-gray-300",
     },
     {
       label: "Negative",
       value: result?.sentiment?.negative ?? 0,
       barClass: "bg-rose-400",
       trackClass: "bg-rose-500/20",
-      textClass: "text-rose-600 dark:text-rose-300",
+      textClass: "text-rose-600 dark:text-gray-300",
     },
   ];
 
@@ -126,17 +137,17 @@ export default function App() {
                 <Sparkles className="h-5 w-5" />
               </div>
               <div>
-                <h1 className="text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                <h1 className="text-base font-semibold tracking-tight text-slate-900 dark:text-white">
                   ReviewEngine AI
                 </h1>
-                <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                <p className="text-[11px] font-medium text-slate-500 dark:text-gray-300">
                   Product review intelligence at SaaS speed
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <nav className="hidden items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-300 sm:flex">
+              <nav className="hidden items-center gap-5 text-sm font-medium text-slate-600 dark:text-gray-300 sm:flex">
                 <a className="transition-colors hover:text-sky-600 dark:hover:text-cyan-300" href="#">
                   Docs
                 </a>
@@ -155,18 +166,18 @@ export default function App() {
               <motion.section
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="ui-card overflow-hidden"
+                className="ui-card ui-card-primary overflow-hidden"
               >
                 <div className="flex items-center justify-between border-b border-slate-200/70 bg-white/45 px-5 py-4 dark:border-white/10 dark:bg-white/5">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-white">
                     <MessageSquare className="h-4 w-4" />
                     <span>Review Input</span>
                   </div>
-                  {inputText && (
+                  {reviewText && (
                     <button
                       type="button"
-                      onClick={() => setInputText("")}
-                      className="rounded-md p-1.5 text-slate-400 transition-colors hover:text-rose-500 dark:text-slate-500 dark:hover:text-rose-400"
+                      onClick={() => setReviewText("")}
+                      className="rounded-md p-1.5 text-slate-400 transition-colors hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-300"
                       title="Clear text"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -176,21 +187,23 @@ export default function App() {
 
                 <div className="p-5">
                   <textarea
-                    value={inputText}
-                    onChange={(event) => setInputText(event.target.value)}
+                    id="review-input"
+                    value={reviewText}
+                    onChange={(event) => setReviewText(event.target.value)}
+                    disabled={!!result}
                     placeholder="Paste product review text here..."
-                    className="ui-input custom-scrollbar h-56 w-full resize-none p-4 text-base leading-relaxed placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                    className="ui-input custom-scrollbar h-56 w-full resize-none p-4 text-base leading-relaxed placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-75 dark:placeholder:text-gray-400"
                   />
                 </div>
 
                 <div className="flex items-center justify-between border-t border-slate-200/70 bg-white/45 px-5 py-4 dark:border-white/10 dark:bg-white/5">
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    {inputText.length} characters
+                  <p className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                    {reviewText.length} characters
                   </p>
                   <button
                     type="button"
                     onClick={() => handleAnalyze()}
-                    disabled={isAnalyzing || !inputText.trim()}
+                    disabled={isAnalyzing || !reviewText.trim()}
                     className="ui-button inline-flex items-center gap-2 px-6 py-2.5 text-sm"
                   >
                     {isAnalyzing ? (
@@ -227,7 +240,7 @@ export default function App() {
               <AnimatePresence mode="wait">
                 {result && (
                   <motion.div
-                    key={inputText}
+                    key={reviewText}
                     variants={containerVariants}
                     initial="hidden"
                     animate="show"
@@ -263,7 +276,7 @@ export default function App() {
                               <Sparkles className="h-3.5 w-3.5" />
                               Executive Summary
                             </div>
-                            <p className="mt-3 border-l-2 border-sky-400/60 pl-4 text-base leading-relaxed text-slate-700 dark:border-cyan-300/50 dark:text-slate-200">
+                            <p className="mt-3 border-l-2 border-sky-400/60 pl-4 text-base leading-relaxed text-slate-700 dark:border-cyan-300/50 dark:text-gray-300">
                               "{result.summary}"
                             </p>
                           </motion.section>
@@ -273,14 +286,14 @@ export default function App() {
                               variants={itemVariants}
                               className="ui-card flex flex-col items-center justify-center p-5 text-center"
                             >
-                              <div className="mb-2 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                              <div className="mb-2 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-300">
                                 <Star className="h-3.5 w-3.5 text-amber-400" />
                                 Score
                               </div>
-                              <div className="text-4xl font-black text-slate-900 dark:text-slate-100">
+                              <div className="text-4xl font-black text-slate-900 dark:text-white">
                                 {result.score?.toFixed(1) ?? "0.0"}
                               </div>
-                              <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                              <div className="mt-2 text-xs text-slate-500 dark:text-gray-400">
                                 scale 0.0 - 5.0
                               </div>
                             </motion.div>
@@ -289,14 +302,14 @@ export default function App() {
                               variants={itemVariants}
                               className="ui-card flex flex-col items-center justify-center p-5 text-center"
                             >
-                              <div className="mb-2 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                              <div className="mb-2 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-300">
                                 <Target className="h-3.5 w-3.5 text-emerald-400" />
                                 Confidence
                               </div>
-                              <div className="text-4xl font-black text-slate-900 dark:text-slate-100">
+                              <div className="text-4xl font-black text-slate-900 dark:text-white">
                                 {result.confidence ?? 0}%
                               </div>
-                              <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                              <div className="mt-2 text-xs text-slate-500 dark:text-gray-400">
                                 model confidence
                               </div>
                             </motion.div>
@@ -319,14 +332,14 @@ export default function App() {
                                 result.pros.map((pro, index) => (
                                   <li
                                     key={`pro-${index}`}
-                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"
+                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
                                   >
                                     <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500 dark:text-emerald-300" />
                                     <span>{pro}</span>
                                   </li>
                                 ))
                               ) : (
-                                <li className="text-sm italic text-slate-500 dark:text-slate-400">
+                                <li className="text-sm italic text-slate-500 dark:text-gray-400">
                                   No significant positives detected.
                                 </li>
                               )}
@@ -348,14 +361,14 @@ export default function App() {
                                 result.cons.map((con, index) => (
                                   <li
                                     key={`con-${index}`}
-                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"
+                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
                                   >
                                     <XCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-rose-500 dark:text-rose-300" />
                                     <span>{con}</span>
                                   </li>
                                 ))
                               ) : (
-                                <li className="text-sm italic text-slate-500 dark:text-slate-400">
+                                <li className="text-sm italic text-slate-500 dark:text-gray-400">
                                   No significant negatives detected.
                                 </li>
                               )}
@@ -377,14 +390,14 @@ export default function App() {
                                 result.neutralPoints.map((point, index) => (
                                   <li
                                     key={`neutral-${index}`}
-                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"
+                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
                                   >
                                     <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(59,130,246,0.7)] dark:bg-sky-300" />
                                     <span>{point}</span>
                                   </li>
                                 ))
                               ) : (
-                                <li className="text-sm italic text-slate-500 dark:text-slate-400">
+                                <li className="text-sm italic text-slate-500 dark:text-gray-400">
                                   No neutral observations detected.
                                 </li>
                               )}
@@ -394,11 +407,11 @@ export default function App() {
 
                         <motion.section variants={itemVariants} className="ui-card p-6">
                           <div className="mb-5 flex items-center justify-between">
-                            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300">
                               <BarChart3 className="h-4 w-4" />
                               Sentiment Distribution
                             </div>
-                            <span className="rounded-full bg-slate-200/70 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                            <span className="rounded-full bg-slate-200/70 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-white/10 dark:text-gray-300">
                               Total Ref: {result.sentiment?.total ?? 0}
                             </span>
                           </div>
@@ -408,7 +421,7 @@ export default function App() {
                               <div key={item.label} className="space-y-2">
                                 <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wide">
                                   <span className={item.textClass}>{item.label}</span>
-                                  <span className="text-slate-600 dark:text-slate-300">
+                                  <span className="text-slate-600 dark:text-gray-300">
                                     {item.value}%
                                   </span>
                                 </div>
@@ -430,6 +443,16 @@ export default function App() {
                         </motion.section>
                       </>
                     )}
+
+                    <div className="mt-8 flex justify-center">
+                      <button
+                        type="button"
+                        onClick={handleReset}
+                        className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-6 py-3 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95"
+                      >
+                        Analyze Another Review
+                      </button>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -441,8 +464,8 @@ export default function App() {
               transition={{ delay: 0.25 }}
               className="space-y-5"
             >
-              <section className="ui-card p-5">
-                <div className="mb-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+              <section className="ui-card ui-card-side p-5">
+                <div className="mb-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300">
                   <History className="h-4 w-4" />
                   Quick Examples
                 </div>
@@ -456,12 +479,12 @@ export default function App() {
                       className="ui-example-button group"
                     >
                       <div className="mb-2 flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-wide text-slate-800 dark:text-slate-200">
+                        <span className="text-xs font-semibold uppercase tracking-wide text-slate-800 dark:text-white">
                           {example.label}
                         </span>
-                        <ChevronRight className="h-3.5 w-3.5 text-slate-400 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-sky-500 dark:text-slate-500 dark:group-hover:text-cyan-300" />
+                        <ChevronRight className="h-3.5 w-3.5 text-slate-400 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-sky-500 dark:text-gray-400 dark:group-hover:text-cyan-300" />
                       </div>
-                      <p className="line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                      <p className="line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-gray-300">
                         {example.text}
                       </p>
                     </button>
@@ -469,54 +492,12 @@ export default function App() {
                 </div>
               </section>
 
-              <section className="ui-card relative overflow-hidden border-sky-400/20 p-5">
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-400/15 to-transparent dark:from-cyan-400/10" />
-                <div className="relative z-10">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                    Advanced NLP Model
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                    Powered by Gemini Flash for zero-shot pattern recognition and semantic analysis.
-                  </p>
-
-                  <div className="mt-5 space-y-4">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-300/30 bg-emerald-300/20 text-emerald-700 dark:border-emerald-300/20 dark:bg-emerald-300/10 dark:text-emerald-300">
-                        <CheckCircle2 className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-800 dark:text-slate-200">
-                          Intent Check
-                        </p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">
-                          Automatic filter for irrelevant content
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-sky-300/30 bg-sky-300/20 text-sky-700 dark:border-sky-300/20 dark:bg-sky-300/10 dark:text-sky-300">
-                        <BarChart3 className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-800 dark:text-slate-200">
-                          Structured Extraction
-                        </p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">
-                          Pros, cons, and neutral breakdown
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
               <section className="flex flex-col items-center gap-1.5 py-2">
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-white/60 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 shadow-sm dark:bg-white/5 dark:text-slate-400">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-white/60 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 shadow-sm dark:bg-white/5 dark:text-gray-300">
                   <CheckCircle2 className="h-3 w-3 text-emerald-500 dark:text-emerald-300" />
                   Enterprise Ready
                 </div>
-                <p className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-500">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-gray-400">
                   Copyright 2026 ReviewEngine AI - S/N: {serialNumber}
                 </p>
               </section>

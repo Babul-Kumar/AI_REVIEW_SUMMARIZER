@@ -26,8 +26,8 @@ body {
 }
 
 .dark body {
-  color: #e2e8f0;
-  background-color: #020617;
+  color: #f8fafc;
+  background-color: #050816;
 }
 
 * {
@@ -48,10 +48,9 @@ body {
 
 .bg-dark-atmosphere {
   background-image:
-    radial-gradient(circle at 20% 18%, rgba(56, 189, 248, 0.18), transparent 34%),
-    radial-gradient(circle at 83% 82%, rgba(129, 140, 248, 0.2), transparent 38%),
-    radial-gradient(circle at 66% 22%, rgba(192, 132, 252, 0.16), transparent 32%),
-    linear-gradient(158deg, #020617 0%, #0b1120 44%, #312e81 100%);
+    radial-gradient(circle at 22% 20%, rgba(56, 189, 248, 0.12), transparent 36%),
+    radial-gradient(circle at 76% 72%, rgba(99, 102, 241, 0.12), transparent 40%),
+    linear-gradient(135deg, #050816 0%, #0a0f2c 55%, #1a1f4a 100%);
 }
 
 .ui-card {
@@ -63,21 +62,36 @@ body {
   box-shadow:
     0 12px 22px rgba(191, 219, 254, 0.5),
     0 10px 34px rgba(15, 23, 42, 0.08);
-  transition:
-    border-color 500ms ease,
-    background-color 500ms ease,
-    box-shadow 500ms ease,
-    transform 500ms ease;
+  transition: all 300ms ease;
+}
+
+.ui-card:hover {
+  transform: translateY(-2px);
 }
 
 .dark .ui-card {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.dark .ui-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dark .ui-card-primary {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
   box-shadow:
-    0 16px 46px rgba(2, 6, 23, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 14px 32px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+}
+
+.dark .ui-card-side {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .ui-input {
@@ -88,10 +102,7 @@ body {
   box-shadow:
     inset 0 1px 2px rgba(15, 23, 42, 0.06),
     0 6px 18px rgba(15, 23, 42, 0.05);
-  transition:
-    border-color 500ms ease,
-    box-shadow 500ms ease,
-    background-color 500ms ease;
+  transition: all 300ms ease;
 }
 
 .ui-input:focus {
@@ -103,19 +114,19 @@ body {
 }
 
 .dark .ui-input {
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  background: rgba(15, 23, 42, 0.72);
-  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
   box-shadow:
     inset 0 1px 2px rgba(2, 6, 23, 0.45),
     0 8px 18px rgba(2, 6, 23, 0.28);
 }
 
 .dark .ui-input:focus {
-  border-color: rgba(103, 232, 249, 0.7);
+  border-color: #60a5fa;
   box-shadow:
     0 0 0 2px rgba(96, 165, 250, 0.9),
-    0 0 28px rgba(56, 189, 248, 0.18);
+    0 0 28px rgba(56, 189, 248, 0.22);
 }
 
 .ui-button {
@@ -125,16 +136,16 @@ body {
   letter-spacing: 0.01em;
   color: #ffffff;
   background-image: linear-gradient(90deg, #3b82f6 0%, #a855f7 100%);
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
-  transition:
-    transform 500ms ease,
-    box-shadow 500ms ease,
-    filter 500ms ease;
+  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.38);
+  transition: all 300ms ease;
 }
 
 .ui-button:hover:not(:disabled) {
   transform: translateY(-1px) scale(1.05);
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+  filter: brightness(1.1);
+  box-shadow:
+    0 16px 32px rgba(59, 130, 246, 0.45),
+    0 0 16px rgba(147, 51, 234, 0.35);
 }
 
 .dark .ui-button {
@@ -160,11 +171,7 @@ body {
   background: rgba(255, 255, 255, 0.75);
   padding: 0.9rem;
   text-align: left;
-  transition:
-    transform 250ms ease,
-    border-color 250ms ease,
-    background-color 250ms ease,
-    box-shadow 250ms ease;
+  transition: all 300ms ease;
 }
 
 .ui-example-button:hover:not(:disabled) {
@@ -175,14 +182,14 @@ body {
 }
 
 .dark .ui-example-button {
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  background: rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .dark .ui-example-button:hover:not(:disabled) {
-  border-color: rgba(103, 232, 249, 0.35);
-  background: rgba(30, 41, 59, 0.68);
-  box-shadow: 0 12px 26px rgba(2, 6, 23, 0.4);
+  border-color: rgba(125, 211, 252, 0.38);
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42);
 }
 
 .custom-scrollbar::-webkit-scrollbar {
