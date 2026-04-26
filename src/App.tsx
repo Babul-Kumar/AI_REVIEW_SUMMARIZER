@@ -902,10 +902,10 @@ export default function App() {
                   Enterprise Ready
                 </div>
                 <p className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-gray-400">
-                  Copyright 2026 ReviewEngine AI - S/N: {serialNumber}
+                  All Copyright Reserved 2026 
                 </p>
                 <p className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-500 px-3 py-1 text-[10px] font-semibold tracking-wider text-white shadow-[0_0_14px_rgba(99,102,241,0.45)]">
-                  developed by BotBros
+                  developed by BotBros(Babul,Harsh&Apoorv)
                 </p>
               </section>
             </motion.aside>
