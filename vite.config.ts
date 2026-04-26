@@ -5,10 +5,26 @@ import {defineConfig, loadEnv} from 'vite';
 
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
+  const geminiApiKeys = Array.from(
+    new Set(
+      [
+        env.GEMINI_API_KEY,
+        ...Object.entries(env)
+          .filter(([key]) => /^GEMINI_API_KEY_\d+$/.test(key))
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([, value]) => value),
+        ...(env.GEMINI_API_KEYS ?? '')
+          .split(/[\r\n,]+/)
+          .map((value) => value.trim()),
+      ].filter(Boolean)
+    )
+  );
+
   return {
     plugins: [react(), tailwindcss()],
     define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'process.env.GEMINI_API_KEY': JSON.stringify(geminiApiKeys[0] ?? ''),
+      'process.env.GEMINI_API_KEYS': JSON.stringify(geminiApiKeys.join(',')),
     },
     resolve: {
       alias: {

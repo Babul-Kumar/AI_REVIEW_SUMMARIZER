@@ -91,7 +91,11 @@ Create a `.env` file:
 
 ```
 GEMINI_API_KEY=your_api_key_here
+GEMINI_API_KEYS=backup_key_one,backup_key_two
 ```
+
+`GEMINI_API_KEYS` is optional. If the active key hits quota or becomes invalid,
+the app will automatically rotate to the next configured key.
 
 Get your API key from:
 👉 https://aistudio.google.com/app/apikey
@@ -130,7 +134,8 @@ http://localhost:5173
 4. Add environment variable:
 
 ```
-VITE_GEMINI_API_KEY=your_api_key
+GEMINI_API_KEY=your_api_key
+GEMINI_API_KEYS=backup_key_one,backup_key_two
 ```
 
 5. Deploy 🎉

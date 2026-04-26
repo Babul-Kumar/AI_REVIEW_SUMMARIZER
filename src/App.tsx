@@ -3,29 +3,40 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any;
+    }
+  }
+}
+
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Search,
-  ChevronRight,
-  Trash2,
   AlertCircle,
+  BadgeCheck,
+  BarChart3,
+  BrainCircuit,
   CheckCircle2,
-  XCircle,
+  ChevronRight,
+  History,
+  Info,
+  Layers3,
+  Loader2,
+  MessageSquare,
+  Search,
+  Sparkles,
   Star,
   Target,
-  BarChart3,
-  MessageSquare,
-  ThumbsUp,
   ThumbsDown,
-  Info,
-  Sparkles,
-  Loader2,
-  History,
+  ThumbsUp,
+  Trash2,
+  XCircle,
 } from "lucide-react";
-import { analyzeReview, type AnalysisResult } from "./services/geminiService";
 import { AnimatedBackground } from "./components/AnimatedBackground";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { analyzeReview, type AnalysisResult } from "./services/geminiService";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -51,13 +62,118 @@ const EXAMPLES = [
   },
   {
     label: "Mixed Review",
-    text: "Good design and fast charging but suffers from performance issues and poor battery optimization. The screen is vibrant but sometimes flickers at low brightness.",
+    text: "These headphones deliver strong sound quality and impressive battery life, but the Bluetooth connection drops during calls. The noise cancellation is weaker than my Sony headphones, although they stay comfortable for long listening sessions.",
   },
   {
     label: "Out of Scope",
     text: "How do I implement a sorting algorithm in Python? I am struggling with the time complexity of bubble sort vs quicksort.",
   },
 ];
+
+function getScoreAppearance(score: number) {
+  if (score >= 4) {
+    return {
+      cardClass: "border-emerald-400/30",
+      textClass: "text-emerald-600 dark:text-emerald-300",
+      badgeClass: "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-200",
+      label: "Strong",
+      helper: "strong overall signal",
+    };
+  }
+
+  if (score >= 3) {
+    return {
+      cardClass: "border-amber-400/30",
+      textClass: "text-amber-600 dark:text-amber-300",
+      badgeClass: "bg-amber-500/15 text-amber-700 dark:bg-amber-400/10 dark:text-amber-200",
+      label: "Mixed",
+      helper: "balanced with tradeoffs",
+    };
+  }
+
+  return {
+    cardClass: "border-rose-400/30",
+    textClass: "text-rose-600 dark:text-rose-300",
+    badgeClass: "bg-rose-500/15 text-rose-700 dark:bg-rose-400/10 dark:text-rose-200",
+    label: "Risky",
+    helper: "issues dominate the review",
+  };
+}
+
+function getQualityAppearance(quality: AnalysisResult["review_quality"]) {
+  switch (quality) {
+    case "high":
+      return {
+        label: "High",
+        helper: "detailed enough for a stronger read",
+        badgeClass: "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-200",
+      };
+    case "low":
+      return {
+        label: "Low",
+        helper: "limited detail may reduce certainty",
+        badgeClass: "bg-rose-500/15 text-rose-700 dark:bg-rose-400/10 dark:text-rose-200",
+      };
+    default:
+      return {
+        label: "Medium",
+        helper: "useful, but not deeply detailed",
+        badgeClass: "bg-amber-500/15 text-amber-700 dark:bg-amber-400/10 dark:text-amber-200",
+      };
+  }
+}
+
+function AnalysisSkeleton() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="space-y-5"
+    >
+      <section className="ui-card p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-4 w-28 rounded-full bg-slate-200/80 dark:bg-white/10" />
+          <div className="h-6 w-full rounded-xl bg-slate-200/80 dark:bg-white/10" />
+          <div className="h-6 w-5/6 rounded-xl bg-slate-200/70 dark:bg-white/8" />
+        </div>
+      </section>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <section key={`metric-skeleton-${index}`} className="ui-card p-5">
+            <div className="animate-pulse space-y-4">
+              <div className="h-4 w-24 rounded-full bg-slate-200/80 dark:bg-white/10" />
+              <div className="h-10 w-20 rounded-xl bg-slate-200/80 dark:bg-white/10" />
+              <div className="h-3 w-28 rounded-full bg-slate-200/60 dark:bg-white/8" />
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <section className="ui-card p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-4 w-24 rounded-full bg-slate-200/80 dark:bg-white/10" />
+          <div className="h-5 w-full rounded-xl bg-slate-200/75 dark:bg-white/10" />
+          <div className="h-5 w-11/12 rounded-xl bg-slate-200/60 dark:bg-white/8" />
+        </div>
+      </section>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <section key={`list-skeleton-${index}`} className="ui-card p-5">
+            <div className="animate-pulse space-y-3">
+              <div className="h-4 w-24 rounded-full bg-slate-200/80 dark:bg-white/10" />
+              <div className="h-3 w-full rounded-full bg-slate-200/70 dark:bg-white/8" />
+              <div className="h-3 w-5/6 rounded-full bg-slate-200/70 dark:bg-white/8" />
+              <div className="h-3 w-4/6 rounded-full bg-slate-200/70 dark:bg-white/8" />
+            </div>
+          </section>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 export default function App() {
   const [reviewText, setReviewText] = useState("");
@@ -66,40 +182,94 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const serialNumber = useMemo(
     () => Math.random().toString(36).slice(2, 10).toUpperCase(),
-    [],
+    []
   );
 
-  const handleAnalyze = async (text: string = reviewText) => {
-    if (!text.trim()) {
-      return;
+  const observationItems = useMemo(() => {
+    if (!result) {
+      return [];
     }
 
-    setIsAnalyzing(true);
-    setError(null);
+    const items =
+      result.observations.length > 0
+        ? result.observations
+        : [
+            ...result.neutralPoints,
+            ...result.comparisons.map((comparison) => `Compared with ${comparison}`),
+          ];
 
-    try {
-      const data = await analyzeReview(text);
-      setResult(data);
-      if (text !== reviewText) {
-        setReviewText(text);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
-    } finally {
-      setIsAnalyzing(false);
+    if (items.length < 2 && result.cons.length > 0) {
+      items.push(`Primary drawback: ${result.cons[0]}`);
     }
-  };
 
-  const handleReset = () => {
-    setReviewText("");
-    setResult(null);
+    if (items.length < 3 && result.features.length > 0) {
+      items.push(`Feature focus: ${result.features.slice(0, 3).join(", ")}`);
+    }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    return Array.from(new Set(items.map((item) => item.trim()).filter(Boolean)));
+  }, [result]);
 
-    setTimeout(() => {
-      document.getElementById("review-input")?.focus();
-    }, 300);
-  };
+  const bestForItems = useMemo(() => {
+    if (!result) {
+      return [];
+    }
+
+    if (result.bestFor.length > 0) {
+      return result.bestFor;
+    }
+
+    return result.features.slice(0, 3);
+  }, [result]);
+
+  const notIdealForItems = useMemo(() => {
+    if (!result) {
+      return [];
+    }
+
+    if (result.notIdealFor.length > 0) {
+      return result.notIdealFor;
+    }
+
+    return result.cons.slice(0, 3);
+  }, [result]);
+
+  const featureGroups = useMemo(() => {
+    if (!result) {
+      return [];
+    }
+
+    if (result.featureGroups.length > 0) {
+      return result.featureGroups;
+    }
+
+    return result.features.length > 0
+      ? [{ category: "Highlights", items: result.features }]
+      : [];
+  }, [result]);
+
+  const majorIssues = useMemo(() => {
+    if (!result) {
+      return [];
+    }
+
+    if (result.majorIssues.length > 0) {
+      return result.majorIssues;
+    }
+
+    return result.cons.slice(0, 1);
+  }, [result]);
+
+  const minorIssues = useMemo(() => {
+    if (!result) {
+      return [];
+    }
+
+    if (result.minorIssues.length > 0) {
+      return result.minorIssues;
+    }
+
+    return result.cons.slice(1);
+  }, [result]);
 
   const sentimentData = [
     {
@@ -124,6 +294,43 @@ export default function App() {
       textClass: "text-rose-600 dark:text-gray-300",
     },
   ];
+
+  const scoreAppearance = getScoreAppearance(result?.score ?? 0);
+  const qualityAppearance = getQualityAppearance(result?.review_quality);
+
+  const handleAnalyze = async (text: string = reviewText) => {
+    const nextText = text.trim();
+
+    if (!nextText) {
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setError(null);
+    setResult(null);
+    setReviewText(nextText);
+
+    try {
+      const data = await analyzeReview(nextText);
+      setResult(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleReset = () => {
+    setReviewText("");
+    setResult(null);
+    setError(null);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    setTimeout(() => {
+      document.getElementById("review-input")?.focus();
+    }, 300);
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -177,7 +384,8 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setReviewText("")}
-                      className="rounded-md p-1.5 text-slate-400 transition-colors hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-300"
+                      disabled={isAnalyzing}
+                      className="rounded-md p-1.5 text-slate-400 transition-colors hover:text-rose-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-rose-300"
                       title="Clear text"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -190,7 +398,7 @@ export default function App() {
                     id="review-input"
                     value={reviewText}
                     onChange={(event) => setReviewText(event.target.value)}
-                    disabled={!!result}
+                    disabled={!!result || isAnalyzing}
                     placeholder="Paste product review text here..."
                     className="ui-input custom-scrollbar h-56 w-full resize-none p-4 text-base leading-relaxed placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-75 dark:placeholder:text-gray-400"
                   />
@@ -238,7 +446,11 @@ export default function App() {
               </AnimatePresence>
 
               <AnimatePresence mode="wait">
-                {result && (
+                {isAnalyzing && <AnalysisSkeleton />}
+              </AnimatePresence>
+
+              <AnimatePresence mode="wait">
+                {!isAnalyzing && result && (
                   <motion.div
                     key={reviewText}
                     variants={containerVariants}
@@ -267,34 +479,54 @@ export default function App() {
                             {result.detected_category ?? "Uncategorized"}
                           </span>
                         </p>
+                        <p className="mt-4 text-sm text-amber-700/85 dark:text-amber-100/80">
+                          {result.aiInsight}
+                        </p>
                       </motion.section>
                     ) : (
                       <>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
                           <motion.section variants={itemVariants} className="ui-card p-6">
                             <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-sky-300/35 bg-sky-100/75 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-sky-700 dark:border-cyan-300/25 dark:bg-cyan-400/10 dark:text-cyan-200">
                               <Sparkles className="h-3.5 w-3.5" />
                               Executive Summary
                             </div>
                             <p className="mt-3 border-l-2 border-sky-400/60 pl-4 text-base leading-relaxed text-slate-700 dark:border-cyan-300/50 dark:text-gray-300">
-                              "{result.summary}"
+                              {result.summary}
                             </p>
+                            <div className="mt-5 flex flex-wrap gap-2">
+                              {result.detected_category && (
+                                <span className="rounded-full bg-slate-200/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-white/10 dark:text-gray-200">
+                                  Category: {result.detected_category}
+                                </span>
+                              )}
+                              <span
+                                className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${qualityAppearance.badgeClass}`}
+                              >
+                                Review Quality: {qualityAppearance.label}
+                              </span>
+                            </div>
                           </motion.section>
 
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
                             <motion.div
                               variants={itemVariants}
-                              className="ui-card flex flex-col items-center justify-center p-5 text-center"
+                              className={`ui-card flex flex-col items-center justify-center p-5 text-center ${scoreAppearance.cardClass}`}
                             >
                               <div className="mb-2 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-300">
                                 <Star className="h-3.5 w-3.5 text-amber-400" />
                                 Score
                               </div>
-                              <div className="text-4xl font-black text-slate-900 dark:text-white">
+                              <div className={`text-4xl font-black ${scoreAppearance.textClass}`}>
                                 {result.score?.toFixed(1) ?? "0.0"}
                               </div>
+                              <span
+                                className={`mt-2 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wide ${scoreAppearance.badgeClass}`}
+                              >
+                                {scoreAppearance.label}
+                              </span>
                               <div className="mt-2 text-xs text-slate-500 dark:text-gray-400">
-                                scale 0.0 - 5.0
+                                {scoreAppearance.helper}
                               </div>
                             </motion.div>
 
@@ -303,20 +535,113 @@ export default function App() {
                               className="ui-card flex flex-col items-center justify-center p-5 text-center"
                             >
                               <div className="mb-2 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-300">
-                                <Target className="h-3.5 w-3.5 text-emerald-400" />
+                                <Target className="h-3.5 w-3.5 text-sky-400" />
                                 Confidence
                               </div>
                               <div className="text-4xl font-black text-slate-900 dark:text-white">
                                 {result.confidence ?? 0}%
                               </div>
                               <div className="mt-2 text-xs text-slate-500 dark:text-gray-400">
-                                model confidence
+                                based on review depth and extraction coverage
+                              </div>
+                            </motion.div>
+
+                            <motion.div
+                              variants={itemVariants}
+                              className="ui-card flex flex-col items-center justify-center p-5 text-center"
+                            >
+                              <div className="mb-2 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-300">
+                                <BadgeCheck className="h-3.5 w-3.5 text-emerald-400" />
+                                Review Quality
+                              </div>
+                              <div className="text-3xl font-black text-slate-900 dark:text-white">
+                                {qualityAppearance.label}
+                              </div>
+                              <div className="mt-2 text-xs text-slate-500 dark:text-gray-400">
+                                {qualityAppearance.helper}
                               </div>
                             </motion.div>
                           </div>
                         </div>
 
-                        <div className="grid gap-4 md:grid-cols-3">
+                        <motion.section variants={itemVariants} className="ui-card overflow-hidden">
+                          <div className="flex items-center justify-between border-b border-slate-200/70 bg-white/45 px-5 py-4 dark:border-white/10 dark:bg-white/5">
+                            <div className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-white">
+                              <BrainCircuit className="h-4 w-4 text-sky-500 dark:text-cyan-300" />
+                              AI Insight
+                            </div>
+                            <span className="rounded-full bg-sky-100/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-sky-700 dark:bg-cyan-400/10 dark:text-cyan-200">
+                              action-oriented
+                            </span>
+                          </div>
+                          <div className="p-6">
+                            <p className="text-base leading-relaxed text-slate-700 dark:text-gray-300">
+                              {result.aiInsight}
+                            </p>
+                          </div>
+                        </motion.section>
+
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <motion.section
+                            variants={itemVariants}
+                            className="ui-card overflow-hidden border-emerald-400/25"
+                          >
+                            <div className="flex items-center gap-2 border-b border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-emerald-700 dark:text-emerald-200">
+                              <Target className="h-4 w-4" />
+                              <span className="text-xs font-bold uppercase tracking-wider">
+                                Best For
+                              </span>
+                            </div>
+                            <ul className="space-y-3 p-4">
+                              {bestForItems.length > 0 ? (
+                                bestForItems.map((item, index) => (
+                                  <li
+                                    key={`best-for-${index}`}
+                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
+                                  >
+                                    <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500 dark:text-emerald-300" />
+                                    <span>{item}</span>
+                                  </li>
+                                ))
+                              ) : (
+                                <li className="text-sm italic text-slate-500 dark:text-gray-400">
+                                  No strong use-case recommendation detected.
+                                </li>
+                              )}
+                            </ul>
+                          </motion.section>
+
+                          <motion.section
+                            variants={itemVariants}
+                            className="ui-card overflow-hidden border-rose-400/25"
+                          >
+                            <div className="flex items-center gap-2 border-b border-rose-500/25 bg-rose-500/10 px-4 py-3 text-rose-700 dark:text-rose-200">
+                              <AlertCircle className="h-4 w-4" />
+                              <span className="text-xs font-bold uppercase tracking-wider">
+                                Not Ideal For
+                              </span>
+                            </div>
+                            <ul className="space-y-3 p-4">
+                              {notIdealForItems.length > 0 ? (
+                                notIdealForItems.map((item, index) => (
+                                  <li
+                                    key={`not-ideal-${index}`}
+                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
+                                  >
+                                    <XCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-rose-500 dark:text-rose-300" />
+                                    <span>{item}</span>
+                                  </li>
+                                ))
+                              ) : (
+                                <li className="text-sm italic text-slate-500 dark:text-gray-400">
+                                  No clear cautionary use-case detected.
+                                </li>
+                              )}
+                            </ul>
+                          </motion.section>
+                        </div>
+
+                        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                           <motion.section
                             variants={itemVariants}
                             className="ui-card overflow-hidden border-emerald-400/25"
@@ -351,28 +676,95 @@ export default function App() {
                             className="ui-card overflow-hidden border-rose-400/25"
                           >
                             <div className="flex items-center gap-2 border-b border-rose-500/25 bg-rose-500/10 px-4 py-3 text-rose-700 dark:text-rose-200">
-                              <ThumbsDown className="h-4 w-4" />
+                              <AlertCircle className="h-4 w-4" />
                               <span className="text-xs font-bold uppercase tracking-wider">
-                                Critical Issues
+                                Issue Severity
                               </span>
                             </div>
-                            <ul className="space-y-3 p-4">
-                              {result.cons.length > 0 ? (
-                                result.cons.map((con, index) => (
-                                  <li
-                                    key={`con-${index}`}
-                                    className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
-                                  >
-                                    <XCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-rose-500 dark:text-rose-300" />
-                                    <span>{con}</span>
-                                  </li>
+                            <div className="space-y-5 p-4">
+                              <div>
+                                <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-200">
+                                  Major Issues
+                                </p>
+                                <ul className="space-y-3">
+                                  {majorIssues.length > 0 ? (
+                                    majorIssues.map((issue, index) => (
+                                      <li
+                                        key={`major-issue-${index}`}
+                                        className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
+                                      >
+                                        <XCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-rose-500 dark:text-rose-300" />
+                                        <span>{issue}</span>
+                                      </li>
+                                    ))
+                                  ) : (
+                                    <li className="text-sm italic text-slate-500 dark:text-gray-400">
+                                      No major issues identified.
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+
+                              <div className="border-t border-slate-200/70 pt-4 dark:border-white/10">
+                                <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-200">
+                                  Minor Issues
+                                </p>
+                                <ul className="space-y-3">
+                                  {minorIssues.length > 0 ? (
+                                    minorIssues.map((issue, index) => (
+                                      <li
+                                        key={`minor-issue-${index}`}
+                                        className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
+                                      >
+                                        <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-amber-400 dark:bg-amber-300" />
+                                        <span>{issue}</span>
+                                      </li>
+                                    ))
+                                  ) : (
+                                    <li className="text-sm italic text-slate-500 dark:text-gray-400">
+                                      No minor issues identified.
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+                          </motion.section>
+
+                          <motion.section
+                            variants={itemVariants}
+                            className="ui-card overflow-hidden border-violet-400/25"
+                          >
+                            <div className="flex items-center gap-2 border-b border-violet-500/25 bg-violet-500/10 px-4 py-3 text-violet-700 dark:text-violet-200">
+                              <Layers3 className="h-4 w-4" />
+                              <span className="text-xs font-bold uppercase tracking-wider">
+                                Key Features
+                              </span>
+                            </div>
+                            <div className="min-h-[188px] space-y-4 p-4">
+                              {featureGroups.length > 0 ? (
+                                featureGroups.map((group, index) => (
+                                  <div key={`feature-group-${index}`} className="space-y-2">
+                                    <p className="text-[11px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-200">
+                                      {group.category}
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                      {group.items.map((item, itemIndex) => (
+                                        <span
+                                          key={`feature-${index}-${itemIndex}`}
+                                          className="inline-flex h-fit items-center rounded-full border border-violet-300/35 bg-violet-100/80 px-3 py-1 text-xs font-semibold text-violet-700 dark:border-violet-300/20 dark:bg-violet-400/10 dark:text-violet-200"
+                                        >
+                                          {item}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
                                 ))
                               ) : (
-                                <li className="text-sm italic text-slate-500 dark:text-gray-400">
-                                  No significant negatives detected.
-                                </li>
+                                <p className="text-sm italic text-slate-500 dark:text-gray-400">
+                                  No clear feature mentions detected.
+                                </p>
                               )}
-                            </ul>
+                            </div>
                           </motion.section>
 
                           <motion.section
@@ -386,10 +778,10 @@ export default function App() {
                               </span>
                             </div>
                             <ul className="space-y-3 p-4">
-                              {result.neutralPoints.length > 0 ? (
-                                result.neutralPoints.map((point, index) => (
+                              {observationItems.length > 0 ? (
+                                observationItems.map((point, index) => (
                                   <li
-                                    key={`neutral-${index}`}
+                                    key={`observation-${index}`}
                                     className="flex items-start gap-2 text-sm text-slate-700 dark:text-gray-300"
                                   >
                                     <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(59,130,246,0.7)] dark:bg-sky-300" />
@@ -398,7 +790,7 @@ export default function App() {
                                 ))
                               ) : (
                                 <li className="text-sm italic text-slate-500 dark:text-gray-400">
-                                  No neutral observations detected.
+                                  No additional observations detected.
                                 </li>
                               )}
                             </ul>
@@ -412,7 +804,7 @@ export default function App() {
                               Sentiment Distribution
                             </div>
                             <span className="rounded-full bg-slate-200/70 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-white/10 dark:text-gray-300">
-                              Total Ref: {result.sentiment?.total ?? 0}
+                              Evidence Total: {result.sentiment?.total ?? 0}
                             </span>
                           </div>
 
@@ -489,6 +881,18 @@ export default function App() {
                       </p>
                     </button>
                   ))}
+                </div>
+              </section>
+
+              <section className="ui-card p-5">
+                <div className="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300">
+                  <BrainCircuit className="h-4 w-4" />
+                  What Improved
+                </div>
+                <div className="space-y-2 text-sm text-slate-600 dark:text-gray-300">
+                  <p>Sharper summaries using strengths, issues, and comparisons.</p>
+                  <p>Confidence capped below 100 for more believable outputs.</p>
+                  <p>Observations, use-case recommendations, and review quality are now surfaced in the UI.</p>
                 </div>
               </section>
 
